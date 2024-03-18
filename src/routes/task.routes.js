@@ -1,0 +1,17 @@
+const express = require('express')
+const TaskController = require('../controller/Task.controller')
+const router = express.Router()
+const { authenticateToken , checkRole} = require('../middleware/auth.middleware')
+
+router.get('/', TaskController.getAllTask)
+router.get('/:id', TaskController.getById)
+router.get('/populate/:id', TaskController.getTaskByIdAndPopulate)
+router.get('/project/:id', TaskController.getTaskByIdProject)
+// router.get('/leader/:id',authenticateToken, checkRole('leader'), TaskController.getTaskByLeader)
+router.post('/add', authenticateToken, checkRole('Leader'),TaskController.addTask)
+router.post('/swap', authenticateToken, checkRole('Leader'),TaskController.swapTask)
+router.put('/update/:id', authenticateToken, checkRole('Leader', 'Manager'),TaskController.update)
+router.put('/complete/:id', TaskController.completeTask)
+router.put('/send/:id', TaskController.sendTaskForLeader)
+router.delete('/delete/:id', authenticateToken, checkRole('Leader', 'Manager'),TaskController.delete)
+module.exports = router;
